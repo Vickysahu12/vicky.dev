@@ -1,0 +1,32 @@
+export const blogPosts = [
+  {
+    id: 'react-native-performance',
+    slug: 'why-react-native',
+    title: 'How I optimised LingoLift for low-end Android devices',
+    excerpt: 'React Native performance on budget phones is brutal. Here is what actually worked.',
+    date: 'Blog is Live Now',
+    readTime: '5 min read',
+    tags: ['React Native', 'Performance'],
+    published: false,
+  },
+  {
+    id: 'fastapi-supabase',
+    slug: 'fastapi-supabase',
+    title: 'FastAPI + Supabase: the backend stack I wish I knew earlier',
+    excerpt: 'Why I ditched Node.js for Python and never looked back.',
+    date: 'Coming Soon',
+    readTime: '4 min read',
+    tags: ['FastAPI', 'Supabase'],
+    published: false,
+  },
+  {
+    id: 'freelance-first-client',
+    slug: 'freelance-first-client',
+    title: 'What I learned trying to get my first freelance client',
+    excerpt: 'WEBNETIC AI has zero clients right now. Here is the honest story.',
+    date: 'Coming Soon',
+    readTime: '6 min read',
+    tags: ['Freelance', 'Startup'],
+    published: false,
+  },
+]

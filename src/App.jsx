@@ -1,13 +1,20 @@
-import React from 'react'
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { HelmetProvider } from 'react-helmet-async'
+import { Layout } from './components/layout/Layout'
+import { Home } from './pages/Home'
+import { BlogPost } from './content/pages/BlogPost'
 
-const App = () => {
+export default function App() {
   return (
-    <div>
-      <h1 class="text-3xl font-bold underline">
-    Hello world!
-  </h1>
-    </div>
+    <HelmetProvider>
+      <BrowserRouter>
+        <Layout>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/blog/:slug" element={<BlogPost />} />
+          </Routes>
+        </Layout>
+      </BrowserRouter>
+    </HelmetProvider>
   )
 }
-
-export default App

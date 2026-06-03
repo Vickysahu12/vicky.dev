@@ -1,0 +1,156 @@
+export const meta = {
+  title: "How I optimised LingoLift for low-end Android devices",
+  date: "Jun 01, 2026",
+  tags: ["React Native", "Performance"],
+  readTime: "7 min",
+}
+
+# How I optimised LingoLift for low-end Android devices
+
+Three months in, I opened LingoLift on my friend's Redmi 9 for the first time.
+
+The app launched. Then stuttered. Then crawled through the mock test screen like it was running underwater.
+
+It worked. It just didn't work *well*.
+
+This post covers the exact fixes I made — what the problem was, why it happened, and the code that solved it.
+
+---
+
+## Understanding the Problem
+
+React Native runs on two threads. The **JS thread** is where your React code executes. The **UI/Native thread** is where actual rendering happens.
+
+When the JS thread gets overloaded, the UI freezes. On budget Android devices with slower processors and less RAM, that pressure compounds fast.
+
+In LingoLift's mock test screen, I had three clear culprits:
+
+1. All 50 questions were re-rendering **every second** — triggered by the countdown timer
+2. FlatList had no idea how tall each item was, so it recalculated on every scroll — on the JS thread
+3. Cold start was slow because Hermes was disabled
+
+---
+
+## Fix 1 — Making FlatList Actually Fast
+
+```jsx
+// Before — JS thread busy on every scroll
+<FlatList
+  data={questions}
+  renderItem={({ item }) => <QuestionCard question={item} />}
+/>
+
+// After — scroll handled on the native thread
+<FlatList
+  data={questions}
+  renderItem={renderItem}
+  keyExtractor={keyExtractor}
+  initialNumToRender={8}
+  maxToRenderPerBatch={5}
+  windowSize={5}
+  removeClippedSubviews={true}
+  getItemLayout={(_, index) => ({
+    length: ITEM_HEIGHT,
+    offset: ITEM_HEIGHT * index,
+    index,
+  })}
+/>
+```
+
+`getItemLayout` made the biggest difference. When React Native knows item dimensions upfront, scroll position calculations move to the native thread entirely — the JS thread is bypassed. Smooth scrolling even on 3GB RAM devices.
+
+`removeClippedSubviews={true}` detaches off-screen items from memory. One prop. Memory usage dropped by nearly half across multiple test sessions.
+
+---
+
+## Fix 2 — Stopping Unnecessary Re-renders
+
+The mock test timer ticked every second. Every tick triggered a state update. Every state update re-rendered all 50 `QuestionCard` components — even the ones the user hadn't touched.
+
+```jsx
+const QuestionCard = memo(function QuestionCard({ question, onSelect, selectedOption }) {
+  return (
+    <View style={styles.card}>
+      <Text>{question.text}</Text>
+      {question.options.map((opt, i) => (
+        <OptionItem
+          key={i}
+          option={opt}
+          selected={selectedOption === i}
+          onPress={() => onSelect(i)}
+        />
+      ))}
+    </View>
+  )
+}, (prev, next) => {
+  // Only re-render if the selected option or question actually changed
+  return prev.selectedOption === next.selectedOption &&
+         prev.question.id === next.question.id
+})
+```
+
+With a custom comparator, only the card the user interacted with re-renders. Timer ticks? No re-renders at all. JS thread utilisation dropped from ~95% to ~35% during active test sessions.
+
+---
+
+## Fix 3 — Enable Hermes (The Easiest Win)
+
+This is the most underrated fix in the React Native ecosystem. In `android/app/build.gradle`:
+
+```gradle
+project.ext.react = [
+    enableHermes: true,
+]
+```
+
+Hermes pre-compiles JavaScript bytecode at build time instead of at runtime. Cold start on the Redmi 9 went from **4.2s to 2.1s**. One line. Done.
+
+If you're building a React Native app and Hermes is off — do this first, before anything else.
+
+---
+
+## Fix 4 — Navigation Stack Cleanup
+
+This one took me longer to catch. React Navigation keeps screens mounted in memory by default. After a user completes a test and lands on the Results screen, the entire test screen — all 50 questions — was still sitting in memory behind it.
+
+```jsx
+// Instead of navigate, use replace
+navigation.replace('Results', { score, answers })
+```
+
+`replace` removes the previous screen from the stack entirely. The user can't go back to it anyway, so there's no reason to keep it in memory. Simple change, meaningful impact.
+
+For tab navigators, `unmountOnBlur` is worth knowing too:
+
+```jsx
+<Tab.Screen
+  name="Practice"
+  component={PracticeStack}
+  options={{ unmountOnBlur: true }}
+/>
+```
+
+---
+
+## The Numbers
+
+| Metric | Before | After |
+|--------|--------|-------|
+| Cold start (Redmi 9) | 4.2s | 2.1s |
+| JS thread during test | ~95% | ~35% |
+| Memory after 3 sessions | 380MB | 210MB |
+| FlatList scroll FPS | 42 | 58 |
+
+---
+
+## What I'd Do Differently
+
+The honest lesson here isn't about any specific fix — it's that I never tested on a real budget device until three months in. Everything looked fine on the emulator and on my own phone. The emulator has 16GB RAM and a fast CPU. It lies to you.
+
+Now I keep a Redmi 9 on my desk specifically for testing. A bit embarrassing to admit, but it's the most effective quality check I have.
+
+For LingoLift v2, I'm planning to replace FlatList with **Flashlist** — Shopify's drop-in replacement that's significantly faster with zero configuration. And I want to try **Zustand** for state management; Redux's overhead is noticeable on constrained hardware.
+
+---
+
+Have a specific React Native performance problem you're stuck on? [Reach out](mailto:bikisahu161@gmail.com) — happy to help.
