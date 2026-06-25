@@ -4,41 +4,28 @@ import { FaGithub, FaLinkedin, FaInstagram, FaMapMarkerAlt } from 'react-icons/f
 import { MdEmail } from 'react-icons/md'
 
 const socials = [
-  {
-    icon: FaGithub,
-    label: 'GitHub',
-    sub: '@Vickysahu12',
-    href: 'https://github.com/Vickysahu12',
-  },
-  {
-    icon: FaLinkedin,
-    label: 'LinkedIn',
-    sub: 'vicky-sahu-234679326',
-    href: 'https://www.linkedin.com/in/vicky-sahu-234679326/',
-  },
-  {
-    icon: FaInstagram,
-    label: 'Instagram',
-    sub: '@vickyfied12',
-    href: 'https://www.instagram.com/vickyfied12/',
-  },
-  {
-    icon: MdEmail,
-    label: 'Email',
-    sub: 'bikisahu161@gmail.com',
-    href: 'mailto:bikisahu161@gmail.com',
-  },
+  { icon: FaGithub,    label: 'GitHub',    sub: '@Vickysahu12',          href: 'https://github.com/Vickysahu12' },
+  { icon: FaLinkedin,  label: 'LinkedIn',  sub: 'vicky-sahu-234679326',  href: 'https://www.linkedin.com/in/vicky-sahu-234679326/' },
+  { icon: FaInstagram, label: 'Instagram', sub: '@vickyfied12',           href: 'https://www.instagram.com/vickyfied12/' },
+  { icon: MdEmail,     label: 'Email',     sub: 'bikisahu161@gmail.com',  href: 'mailto:bikisahu161@gmail.com' },
 ]
 
 export function Contact() {
-  const ref = useScrollReveal()
+  const { ref, isVisible } = useScrollReveal()
+
+  const fromBottom = (delay = 0) => ({
+    transition: 'opacity 0.7s cubic-bezier(0.4,0,0.2,1), transform 0.7s cubic-bezier(0.4,0,0.2,1)',
+    opacity: isVisible ? 1 : 0,
+    transform: isVisible ? 'translateY(0)' : 'translateY(40px)',
+    transitionDelay: `${delay}ms`,
+  })
 
   return (
     <section id="contact" className="py-28 px-6 max-w-6xl mx-auto">
-      <div ref={ref} className="section-reveal">
+      <div ref={ref}>
+
         {/* Big CTA */}
-        <div className="rounded-3xl border border-border bg-surface p-10 md:p-16 text-center relative overflow-hidden mb-14">
-          {/* Glow */}
+        <div style={fromBottom(0)} className="rounded-3xl border border-border bg-surface p-10 md:p-16 text-center relative overflow-hidden mb-14">
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-accent/5 rounded-full blur-[80px] pointer-events-none" />
 
           <p className="font-mono text-xs text-accent tracking-widest uppercase mb-4">
@@ -47,7 +34,15 @@ export function Contact() {
           <h2 className="font-display text-5xl md:text-7xl font-extrabold leading-none mb-4">
             LET'S BUILD
           </h2>
-          <h2 className="font-display text-5xl md:text-7xl font-extrabold leading-none text-gradient mb-6">
+          <h2
+            className="font-display text-5xl md:text-7xl font-extrabold leading-none mb-6"
+            style={{
+              backgroundImage: 'linear-gradient(135deg, #00FFB2, #00cc8e)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text',
+            }}
+          >
             THE FUTURE.
           </h2>
           <p className="text-text-dim font-body text-base max-w-md mx-auto mb-10">
@@ -72,12 +67,13 @@ export function Contact() {
 
         {/* Social grid */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          {socials.map(({ icon: Icon, label, sub, href }) => (
+          {socials.map(({ icon: Icon, label, sub, href }, i) => (
             <a
               key={label}
               href={href}
               target="_blank"
               rel="noopener noreferrer"
+              style={fromBottom(100 + i * 80)}
               className="group flex flex-col items-center gap-3 p-5 rounded-2xl border border-border bg-surface hover:border-accent/40 hover:bg-accent/5 transition-all duration-200 hover:-translate-y-1"
             >
               <div className="w-10 h-10 rounded-xl border border-border flex items-center justify-center text-text-dim group-hover:border-accent/50 group-hover:text-accent transition-all">
@@ -92,6 +88,7 @@ export function Contact() {
             </a>
           ))}
         </div>
+
       </div>
     </section>
   )

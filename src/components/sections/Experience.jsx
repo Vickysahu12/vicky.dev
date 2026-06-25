@@ -73,7 +73,6 @@ function ExperienceItem({ item, index }) {
         transition: `opacity 0.5s ease ${index * 0.1}s, transform 0.5s ease ${index * 0.1}s`,
       }}
     >
-      {/* Dot */}
       <div
         className="absolute left-2 md:left-[18px] top-1 w-4 h-4 rounded-full border-2 border-accent bg-bg flex items-center justify-center"
         style={{
@@ -81,7 +80,6 @@ function ExperienceItem({ item, index }) {
           transition: `box-shadow 0.4s ease ${index * 0.1 + 0.2}s`,
         }}
       >
-        {/* Ping ring */}
         {cardInView && (
           <span
             style={{
@@ -96,7 +94,6 @@ function ExperienceItem({ item, index }) {
         <div className="w-1.5 h-1.5 rounded-full bg-accent" />
       </div>
 
-      {/* Card */}
       <div className="bg-surface border border-border rounded-2xl p-6 hover:border-accent/30 transition-colors group">
         <div className="flex flex-wrap items-start justify-between gap-3 mb-3">
           <div>
@@ -128,11 +125,10 @@ function ExperienceItem({ item, index }) {
 }
 
 export function Experience() {
-  const ref = useScrollReveal()
+  const { ref, isVisible } = useScrollReveal()
 
   return (
     <>
-      {/* Ping keyframe */}
       <style>{`
         @keyframes ping {
           0%   { transform: scale(1); opacity: 0.8; }
@@ -142,21 +138,35 @@ export function Experience() {
 
       <section id="experience" className="py-28 w-full">
         <div className="px-4 md:px-6 max-w-6xl mx-auto">
-          <div ref={ref} className="section-reveal">
-            <SectionLabel number={4} label="The Odyssey" />
-            <h2 className="font-display text-4xl md:text-5xl font-bold mt-2 mb-14">
-              A Path of <span className="text-gradient">Mastery.</span>
-            </h2>
+          <div ref={ref}>
+
+            {/* Header */}
+            <div style={{
+              opacity: isVisible ? 1 : 0,
+              transform: isVisible ? 'translateX(0)' : 'translateX(-50px)',
+              transition: 'opacity 0.7s cubic-bezier(0.4,0,0.2,1), transform 0.7s cubic-bezier(0.4,0,0.2,1)',
+            }}>
+              <SectionLabel number={4} label="The Odyssey" />
+              <h2 className="font-display text-4xl md:text-5xl font-bold mt-2 mb-14">
+                A Path of{' '}
+                <span style={{
+                  backgroundImage: 'linear-gradient(135deg, #00FFB2, #00cc8e)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  backgroundClip: 'text',
+                }}>Mastery.</span>
+              </h2>
+            </div>
 
             <div className="relative">
               <AnimatedLine />
-
               <div className="space-y-10">
                 {experience.map((item, i) => (
                   <ExperienceItem key={item.id} item={item} index={i} />
                 ))}
               </div>
             </div>
+
           </div>
         </div>
       </section>

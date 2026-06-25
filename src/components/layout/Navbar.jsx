@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { cn } from '../../utils/cn'
+import logo from "../../assets/logo.webp"
 
 const links = [
   { label: 'About', href: '#about' },
@@ -129,18 +130,26 @@ export function Navbar() {
           <a
             href="#"
             style={{
-              fontWeight: 700,
-              fontSize: '18px',
-              color: '#00FFB2',
-              textDecoration: 'none',
+              display: 'flex',
+              alignItems: 'center',
               flexShrink: 0,
-              letterSpacing: '-0.02em',
+              textDecoration: 'none',
             }}
           >
-            VICKY
+            <img
+              src={logo}
+              alt="Vicky Logo"
+              style={{
+                height: '76px',
+                width: 'auto',
+                objectFit: 'contain',
+                display: 'block',
+                filter: 'brightness(0) saturate(100%) invert(88%) sepia(47%) saturate(600%) hue-rotate(100deg) brightness(105%)',
+              }}
+            />
           </a>
 
-          {/* Desktop links — hidden on mobile via className */}
+          {/* Desktop links */}
           <ul
             className="hidden md:flex"
             style={{ alignItems: 'center', gap: '24px', listStyle: 'none', margin: 0, padding: 0 }}
@@ -185,7 +194,7 @@ export function Navbar() {
           {/* Hamburger */}
           <button
   onClick={() => setMenuOpen(prev => !prev)}
-  className="md:hidden"
+  className="md:hidden flex"
   style={{
     background: 'none',
     border: 'none',
@@ -201,35 +210,35 @@ export function Navbar() {
   }}
   aria-label="Toggle menu"
 >
-  <span style={{
-    display: 'block',
-    width: '32px',   // 24 → 28
-    height: '4px',   // 2 → 3
-    background: 'white',
-    borderRadius: '9999px',
-    transition: 'all 0.3s',
-    transform: menuOpen ? 'rotate(45deg) translate(5px, 6px)' : 'none',
-  }} />
-  <span style={{
-    display: 'block',
-    width: '32px',
-    height: '4px',
-    background: 'white',
-    borderRadius: '9999px',
-    transition: 'all 0.3s',
-    opacity: menuOpen ? 0 : 1,
-    transform: menuOpen ? 'scaleX(0)' : 'scaleX(1)',
-  }} />
-  <span style={{
-    display: 'block',
-    width: '32px',
-    height: '4px',
-    background: 'white',
-    borderRadius: '9999px',
-    transition: 'all 0.3s',
-    transform: menuOpen ? 'rotate(-45deg) translate(5px, -6px)' : 'none',
-  }} />
-</button>
+            <span style={{
+              display: 'block',
+              width: '22px',
+              height: '2px',
+              background: 'white',
+              borderRadius: '9999px',
+              transition: 'all 0.3s',
+              transform: menuOpen ? 'rotate(45deg) translate(4px, 4px)' : 'none',
+            }} />
+            <span style={{
+              display: 'block',
+              width: '22px',
+              height: '2px',
+              background: 'white',
+              borderRadius: '9999px',
+              transition: 'all 0.3s',
+              opacity: menuOpen ? 0 : 1,
+              transform: menuOpen ? 'scaleX(0)' : 'scaleX(1)',
+            }} />
+            <span style={{
+              display: 'block',
+              width: '22px',
+              height: '2px',
+              background: 'white',
+              borderRadius: '9999px',
+              transition: 'all 0.3s',
+              transform: menuOpen ? 'rotate(-45deg) translate(4px, -4px)' : 'none',
+            }} />
+          </button>
         </nav>
       </header>
     </>

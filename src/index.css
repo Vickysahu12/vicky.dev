@@ -133,3 +133,18 @@ body,
 .prose-blog ul, .prose-blog ol { padding-left: 24px; margin-bottom: 1.5em; }
 .prose-blog li { margin-bottom: 0.5em; }
 .prose-blog strong { color: #fff; font-weight: 600; }
+
+@theme {
+  --animate-slide-left: slide-left 0.7s cubic-bezier(0.4,0,0.2,1) forwards;
+  --animate-slide-right: slide-right 0.7s cubic-bezier(0.4,0,0.2,1) forwards;
+}
+
+@keyframes slide-left {
+  0% { opacity: 0; transform: translateX(-60px); }
+  100% { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes slide-right {
+  0% { opacity: 0; transform: translateX(60px); }
+  100% { opacity: 1; transform: translateX(0); }
+}
