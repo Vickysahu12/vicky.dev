@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react'
 import { cn } from '../../utils/cn'
-import logo from "../../assets/logo.webp"
 
 const links = [
   { label: 'About', href: '#about' },
@@ -136,17 +135,18 @@ export function Navbar() {
               textDecoration: 'none',
             }}
           >
-            <img
-              src={logo}
-              alt="Vicky Logo"
+            <span
               style={{
-                height: '76px',
-                width: 'auto',
-                objectFit: 'contain',
-                display: 'block',
-                filter: 'brightness(0) saturate(100%) invert(88%) sepia(47%) saturate(600%) hue-rotate(100deg) brightness(105%)',
+                fontFamily: "'Syne', sans-serif",
+                fontWeight: 700,
+                fontSize: '22px',
+                letterSpacing: '-0.02em',
+                color: '#fff',
               }}
-            />
+            >
+              VICKY
+              <span style={{ color: '#00FFB2' }}>.</span>
+            </span>
           </a>
 
           {/* Desktop links */}
@@ -193,23 +193,23 @@ export function Navbar() {
 
           {/* Hamburger */}
           <button
-  onClick={() => setMenuOpen(prev => !prev)}
-  className="md:hidden flex"
-  style={{
-    background: 'none',
-    border: 'none',
-    cursor: 'pointer',
-    padding: '10px',
-    flexShrink: 0,
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'center',
-    gap: '6px',
-    width: '48px',
-    height: '48px',
-  }}
-  aria-label="Toggle menu"
->
+            onClick={() => setMenuOpen(prev => !prev)}
+            className="md:hidden flex"
+            style={{
+              background: 'none',
+              border: 'none',
+              cursor: 'pointer',
+              padding: '10px',
+              flexShrink: 0,
+              flexDirection: 'column',
+              justifyContent: 'center',
+              alignItems: 'center',
+              gap: '6px',
+              width: '48px',
+              height: '48px',
+            }}
+            aria-label="Toggle menu"
+          >
             <span style={{
               display: 'block',
               width: '22px',
